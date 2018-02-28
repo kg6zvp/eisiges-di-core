@@ -8,7 +8,6 @@ stages:
 build:
   stage: build
   script:
-    - ls 'eisiges-di-core.gemspec'
     - bundle install
     - gem build eisiges-di-core.gemspec
   artifacts:
@@ -25,7 +24,8 @@ test:
 deploy:
   stage: deploy
   script:
-    - echo "Run deployment script here"
+    - gem install geminabox
+    - gem inabox --host 'http://gems.mccollum.enterprises' eisiges-di-core-*.gem
   only:
     - master
 
