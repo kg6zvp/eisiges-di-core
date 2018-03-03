@@ -3,9 +3,13 @@ require "eisiges/di/core/version"
 module Eisiges
 	module DI
 		module Core
-			def self.included base
+			#def self.included base
+			#	build_class base
+			#end
+
+			def self.build_class base
 				#puts "included called..."
-				puts base.name #outputs the class that this was mixed into
+				#puts base.name #outputs the class that this was mixed into
 				
 				#get_simple_name
 				base.define_singleton_method(:get_simple_name) do |klasse|
@@ -13,9 +17,9 @@ module Eisiges
 				end
 
 				#inject
-				puts "Performing injection point registration on " + base.name #+self.name
+				#puts "Performing injection point registration on " + base.name #+self.name
 				base.define_singleton_method(:inject) do |args| #klasse, as: nil
-					puts args[:klasse]
+					#puts args[:klasse]
 					as = args[:as]
 					if as == nil
 						as = get_simple_name(klasse)
@@ -62,3 +66,6 @@ module Eisiges
 		end
 	end
 end
+
+Eisiges::DI::Core.build_class Object #Register these methods with every single class
+
