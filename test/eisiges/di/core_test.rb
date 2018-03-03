@@ -7,7 +7,7 @@ class ServiceObject
 end
 
 class DiExample
-	include Eisiges::DI::Core
+	#include Eisiges::DI::Core #not necessary because of inclusion in Ruby's Object class
 
 	inject klasse: ServiceObject, as: :so
 end
