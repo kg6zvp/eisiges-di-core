@@ -25,7 +25,7 @@ Gem::Specification.new do |spec|
 	#spec.files         = `git ls-files -z`.split("\x0").reject do |f|
 	#	f.match(%r{^(test|spec|features)/})
 	#end
-	#puts "spec.files = #{spec.files}"
+	#puts "spec.files         = #{spec.files}"
 	
 	spec.files         = [".gitignore", ".gitlab-ci.yml", ".travis.yml", "CODE_OF_CONDUCT.md", "Gemfile", "README.md", "Rakefile", "bin/console", "bin/setup", "eisiges-di-core.gemspec", "lib/eisiges/di/core.rb", "lib/eisiges/di/core/version.rb"]
 
