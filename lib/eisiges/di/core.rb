@@ -23,6 +23,18 @@ module Eisiges
 					((@@injections ||= {})[self] ||= {})[as] = args[:klasse]
 				end
 
+				base.define_singleton_method(:provides) do |klasse=nil, dependencies:, &block| #klasse, dependencies: {varName: Class, varName: Class}, blck: $block_goes_here
+					(@@providers ||= {})[klasse] = {dependencies: dependencies, block: block}
+				end
+
+				base.define_singleton_method(:provider) do
+					(@@providers ||= {})[self]
+				end
+
+				base.define_singleton_method(:has_provider?) do
+					return (not self.provider.nil?)
+				end
+
 				#shareable
 				base.define_singleton_method(:shareable) do |args| #in_scope: :request (:once/:never, :request, :session, :user, :global)
 					(@@shareable ||= {})[self] = (args ||= {})
