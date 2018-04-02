@@ -1,47 +1,5 @@
 require 'test_helper'
 
-class ServiceObject
-	shareable :my_scope
-
-	def get_Status
-		"status: green"
-	end
-end
-
-class DiExample
-	#include Eisiges::DI::Core #not necessary because of inclusion in Ruby's Object class
-
-	inject klasse: ServiceObject, as: :so
-
-	def run_me
-		@so.get_status
-	end
-end
-
-class ThirdPartyLib
-	def initialize(so:)
-		@so = so
-	end
-end
-
-class ThirdPartyWithHash
-	def initialize(di_example:, third_party:)
-		@di_example = di_example
-		@third_party = third_party
-	end
-end
-
-class Providers
-	# provider method which accepts a hash
-	provides ThirdPartyLib, dependencies: {so: ServiceObject} do |so:|
-		return ThirdPartyLib.new(so)
-	end
-
-	# constructor which accepts a hash
-	provides ThirdPartyWithHash, dependencies: {di_example: DiExample, third_party: ThirdPartyLib}
-end
-
-
 class Eisiges::DI::CoreTest < Minitest::Test
 	def test__that_it_has_a_version_number
 		refute_nil ::Eisiges::DI::Core::VERSION
@@ -51,6 +9,13 @@ class Eisiges::DI::CoreTest < Minitest::Test
 		assert_equal({:so => ServiceObject}, DiExample.dependencies)
 		assert_equal({:so => ServiceObject}, DiExample.get_injection_points)
 
+		assert_equal({:so => ServiceObject}, InheritedEx.dependencies)
+		assert_equal({:so => ServiceObject}, InheritedEx.get_injection_points)
+		assert_equal({:so => ServiceObject, :my_date => MyDate}, OtherInheritedEx.dependencies)
+		assert_equal({:so => ServiceObject, :my_date => MyDate}, OtherInheritedEx.get_injection_points)
+
+		assert_equal({}, MyDate.dependencies)
+		assert_equal({}, MyDate.get_injection_points)
 		assert_equal({}, ServiceObject.dependencies)
 		assert_equal({}, ServiceObject.get_injection_points)
 	end
@@ -64,12 +29,13 @@ class Eisiges::DI::CoreTest < Minitest::Test
 	end
 
 	def test__it_can_show_providers_in_example
-		assert ThirdPartyLib.has_provider?
-		refute_nil ThirdPartyLib.provider
-		assert_equal({:so => ServiceObject}, ThirdPartyLib.provider[:dependencies])
-		refute_nil ThirdPartyLib.provider[:block]
+		assert ThirdPartyLib.has_instance_factory?
+		refute_nil ThirdPartyLib.instance_factory
+		assert_equal({:so => ServiceObject}, ThirdPartyLib.instance_factory[:dependencies])
+		refute_nil ThirdPartyLib.instance_factory[:block]
+		assert_nil ThirdPartyWithHash.instance_factory[:block]
 
-		refute DiExample.has_provider?
+		refute DiExample.has_instance_factory?
 	end
 end
 

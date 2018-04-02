@@ -1,5 +1,9 @@
 image: 'ruby:alpine'
 
+variables:
+  GIT_SUBMODULES: init
+  GIT_SUBMODULE_STRATEGY: recursive
+
 stages:
   - build
   - test
