@@ -23,16 +23,16 @@ module Eisiges
 					((@@injections ||= {})[self] ||= {})[as] = args[:klasse]
 				end
 
-				base.define_singleton_method(:provides) do |klasse=nil, dependencies:, &block| #klasse, dependencies: {varName: Class, varName: Class}, blck: $block_goes_here
-					(@@providers ||= {})[klasse] = {dependencies: dependencies, block: block}
+				base.define_singleton_method(:factory_for) do |klasse=nil, dependencies:, &block| #klasse, dependencies: {varName: Class, varName: Class}, blck: $block_goes_here
+					(@@inst_factories ||= {})[klasse] = {dependencies: dependencies, block: block}
 				end
 
-				base.define_singleton_method(:provider) do
-					(@@providers ||= {})[self]
+				base.define_singleton_method(:instance_factory) do
+					(@@inst_factories ||= {})[self]
 				end
 
-				base.define_singleton_method(:has_provider?) do
-					return (not self.provider.nil?)
+				base.define_singleton_method(:has_instance_factory?) do
+					return (not self.instance_factory.nil?)
 				end
 
 				#shareable
@@ -51,7 +51,9 @@ module Eisiges
 
 				#get_injection_points
 				base.define_singleton_method(:get_injection_points) do
-					((@@injections ||= {})[self] ||= {})
+					h = {}
+					h = h.merge(self.superclass.get_injection_points) if self.superclass.respond_to?(:get_injection_points)
+					h.merge ((@@injections ||= {})[self] ||= {})
 				end
 
 				base.define_singleton_method(:dependencies) do
