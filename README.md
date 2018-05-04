@@ -26,8 +26,6 @@ Or install it yourself as:
 require 'eisiges/di/core'
 
 class MyClass
-	include Eisiges::DI::Core
-
 	inject klasse: OtherClass, as: other_object
 
 	def method_with_class

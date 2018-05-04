@@ -1,5 +1,8 @@
 image: 'ruby:alpine'
 
+before_script:
+  - apk update && apk add openssl ca-certificates git
+
 variables:
   GIT_SUBMODULES: init
   GIT_SUBMODULE_STRATEGY: recursive
@@ -30,6 +33,14 @@ deploy:
   script:
     - gem install geminabox
     - gem inabox --host 'http://gems.mccollum.enterprises' eisiges-di-core-*.gem
+    - git clone "$CI_REPOSITORY_URL" g-eisiges-di-core
+    - cd g-eisiges-di-core
+    - git config user.email "kg6zvp@gmail.com"
+    - git config user.name "Sam McCollum"
+    - git remote add github "https://kg6zvp:$GITHUB_PERSONAL_ACCESS_TOKEN@github.com/kg6zvp/eisiges-di-core.git"
+    - git push --force github master
+    - cd ..
+    - rm -rf g-eisiges-di-core
   only:
     - master
 
